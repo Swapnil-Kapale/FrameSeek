@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_from_directory
+from flask import Flask, request, render_template, send_from_directory,jsonify, url_for
 from pathlib import Path
 import pandas as pd
 import os
@@ -9,6 +9,21 @@ from skimage.metrics import structural_similarity as ssim
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from PIL import Image
 from transformers import CLIPProcessor, CLIPModel
+
+
+app = Flask(__name__)
+
+# Configuration
+UPLOAD_FOLDER = 'uploads'
+OUTPUT_FOLDER = 'unique_frames_parallel'
+REDUCED_QUALITY_FOLDER = 'updated_images'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Ensure necessary directories exist
+for folder in [UPLOAD_FOLDER, OUTPUT_FOLDER, REDUCED_QUALITY_FOLDER]:
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
 
 # Initialize the CLIP model and processor
 print("Initializing CLIP model and processor...")
@@ -173,37 +188,36 @@ def get_html(results, height=200):
 
 
 # Search for images using text queries with timestamps
+# def image_search(query, image_embeddings, df, n_results=5):
+#     text_embeddings = compute_text_embeddings([query]).cpu().numpy()
+#     # Calculate cosine similarity between text and image embeddings
+#     similarities = image_embeddings @ text_embeddings.T
+#     # Get top-n results
+#     results_indices = np.argsort(similarities[:, 0])[-1:-n_results - 1:-1]
+#
+#     # Get paths, scores, and timestamps for the results
+#     results = [(df.iloc[i]['path'], similarities[i, 0], df.iloc[i]['timestamp']) for i in results_indices]
+#     return results
+
+# Update the image_search function to return relative paths
 def image_search(query, image_embeddings, df, n_results=5):
     text_embeddings = compute_text_embeddings([query]).cpu().numpy()
-    # Calculate cosine similarity between text and image embeddings
     similarities = image_embeddings @ text_embeddings.T
-    # Get top-n results
     results_indices = np.argsort(similarities[:, 0])[-1:-n_results - 1:-1]
-
-    # Get paths, scores, and timestamps for the results
-    results = [(df.iloc[i]['path'], similarities[i, 0], df.iloc[i]['timestamp']) for i in results_indices]
+    results = [(os.path.relpath(df.iloc[i]['path'], REDUCED_QUALITY_FOLDER), 
+                similarities[i, 0], 
+                df.iloc[i]['timestamp']) for i in results_indices]
     return results
 
 
 def secure_filename(filename):
     return str('sample' + '.' + Path(filename).suffix)
 
-app = Flask(__name__)
 
-
-# Upload directory path
-UPLOAD_FOLDER = 'uploads'
-
-# Create upload folder if it doesn't exist
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
+#
 @app.route('/upload', methods=['POST'])
 def upload_video():
     video_file = request.files['video']
@@ -253,10 +267,55 @@ def upload_video():
     np.save("image_embeddings.pkl", image_embeddings)
 
     return 'Video uploaded successfully!'
+#
+# @app.route('/uploads/<filename>')
+# def send_video(filename):
+#     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+#
+#
+# @app.route('/search', methods=['POST'])
+# def search_images():
+#     query = request.form['query']
+#     df = pd.read_pickle("image_metadata.pkl")
+#     image_embeddings = np.load("image_embeddings.pkl.npy")
+#
+#     results = image_search(query, image_embeddings, df)
+#     return jsonify([{'path': r[0], 'score': float(r[1]), 'timestamp': r[2]} for r in results])
+#
+# if __name__ == '__main__':
+#     app.run(debug=True)
+
+
+# Flask routes
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+
+@app.route('/search', methods=['POST'])
+def search_images():
+    query = request.form['query']
+    df = pd.read_pickle("image_metadata.pkl")
+    image_embeddings = np.load("image_embeddings.pkl.npy")
+
+    results = image_search(query, image_embeddings, df)
+    return jsonify([{
+        'path': url_for('serve_image', filename=r[0]),
+        'score': float(r[1]),
+        'timestamp': r[2]
+    } for r in results])
+
 
 @app.route('/uploads/<filename>')
 def send_video(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+
+
+@app.route('/images/<path:filename>')
+def serve_image(filename):
+    return send_from_directory(REDUCED_QUALITY_FOLDER, filename)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
