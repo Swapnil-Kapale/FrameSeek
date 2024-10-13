@@ -1,0 +1,9 @@
+.venv
+.idea
+__pycache__
+uploads
+unique_frames_parallel
+updated_images
+*.pkl
+*.npy
+.DS_Store
