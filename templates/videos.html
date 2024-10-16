@@ -1,0 +1,11 @@
+<h1>Videos</h1>
+
+<ul>
+    {% for video in videos %}
+        <li>
+            <h2>{{ video.name }}</h2>
+            <p>Hash: {{ video.hash }}</p>
+            <p>Upload Time: {{ video.upload_time }}</p>
+        </li>
+    {% endfor %}
+</ul>
