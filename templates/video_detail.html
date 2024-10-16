@@ -1,0 +1,36 @@
+<h1>Video {{ video.name }}</h1>
+
+<p>Hash: {{ video.hash }}</p>
+<p>Upload Time: {{ video.upload_time }}</p>
+
+<!-- <form action="{{ url_for('search_frames', video_id=video.id) }}" method="post"> -->
+<form action="/videos/{{ video.id }}/search" method="post">
+    <input type="text" name="query" placeholder="Search for frames">
+    <input type="submit" value="Search">
+</form>
+
+<div id="results">
+    {% for result in results %}
+        <p>Timestamp: {{ result[0] }}, Similarity: {{ result[1] }}</p>
+    {% endfor %}
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('form').submit(function(event) {
+            event.preventDefault();
+            var query = $('input[name="query"]').val();
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: {query: query},
+                success: function(data) {
+                    $('#results').empty();
+                    $.each(data, function(index, result) {
+                        $('#results').append('<p>Timestamp: ' + result[0] + ', Similarity: ' + result[1] + '</p>');
+                    });
+                }
+            });
+        });
+    });
+</script>

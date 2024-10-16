@@ -152,7 +152,7 @@ def compute_image_embeddings(image_paths):
         # Normalize the embedding
         image_embedding = image_features / image_features.norm(p=2)
         # add filename + embedding both to image_embeddings
-        res = {'filename': os.path.basename(image_path), 'embedding': image_embedding.squeeze().cpu().numpy()}
+        res = {'filename': image_path, 'embedding': image_embedding.squeeze().cpu().numpy()}
         image_embeddings.append(res)
         # image_embeddings.append(image_embedding.squeeze().cpu().numpy())
 
@@ -160,3 +160,11 @@ def compute_image_embeddings(image_paths):
         print(f"Processed image {idx + 1}/{total_images}: {os.path.basename(image_path)}")
 
     return image_embeddings;
+
+# Function to compute text embeddings using CLIP
+def compute_text_embeddings(list_of_strings):
+    inputs = processor(text=list_of_strings, return_tensors="pt", padding=True)
+    with torch.no_grad():
+        text_features = model.get_text_features(**inputs)
+    # Normalize the embedding
+    return text_features / text_features.norm(p=2)

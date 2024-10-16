@@ -4,6 +4,7 @@
     {% for video in videos %}
         <li>
             <h2>{{ video.name }}</h2>
+            <a href="/videos/{{ video.id }}">View</a>
             <p>Hash: {{ video.hash }}</p>
             <p>Upload Time: {{ video.upload_time }}</p>
         </li>

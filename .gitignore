@@ -7,3 +7,5 @@ updated_images
 *.pkl
 *.npy
 .DS_Store
+frames/
+videos/
