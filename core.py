@@ -13,7 +13,7 @@ import numpy as np
 # Cassandra connection
 def get_cassandra_connection():
     auth_provider = PlainTextAuthProvider(username='cassandra', password='cassandra')
-    cluster = Cluster(['localhost'], auth_provider=auth_provider, port=9042)
+    cluster = Cluster(['127.0.0.1'], auth_provider=auth_provider, port=9042)
     session = cluster.connect('video_search')
     return session
 

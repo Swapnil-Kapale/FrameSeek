@@ -1,8 +1,74 @@
-<!-- templates/upload.html -->
-
-<h1>Video Upload</h1>
+<!-- <h1>Video Upload</h1>
 
 <form action="" method="post" enctype="multipart/form-data">
     <input type="file" name="video" accept="video/*">
     <input type="submit" value="Upload Video">
-</form>
+</form> -->
+
+<!-- templates/upload.html -->
+
+<style>
+  body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+  }
+
+  .upload-container {
+      width: 50%;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .upload-container h1 {
+      text-align: center;
+      margin-bottom: 20px;
+  }
+
+  .upload-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .upload-form input[type="file"] {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+  }
+
+  .upload-form input[type="submit"] {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+  }
+
+  .upload-form input[type="submit"]:hover {
+      background-color: #3e8e41;
+  }
+  .all-videos-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+  }
+</style>
+
+<div class="upload-container">
+  <h1>Video Upload</h1>
+  <button class="all-videos-btn" onclick="window.location.href='/videos'">All Videos</button>
+  <form class="upload-form" action="" method="post" enctype="multipart/form-data">
+      <input type="file" name="video" accept="video/*">
+      <input type="submit" value="Upload Video">
+  </form>
+</div>

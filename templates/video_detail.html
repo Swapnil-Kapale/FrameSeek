@@ -1,12 +1,52 @@
-<h1>Video {{ video.name }}</h1>
+<style>
+  .title {
+    margin: 20px 0;
+  }
+  .search-box {
+    padding: 10px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  .search-btn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .video-container {
+    width: 50%;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .all-videos-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+
+</style>
+<div class="video-container">
+  <button class="all-videos-btn" onclick="window.location.href='/videos'">All Videos</button>
+<h1 class="title">{{ video.name }}</h1>
 
 <p>Hash: {{ video.hash }}</p>
 <p>Upload Time: {{ video.upload_time }}</p>
 
-<!-- <form action="{{ url_for('search_frames', video_id=video.id) }}" method="post"> -->
 <form action="/videos/{{ video.id }}/search" method="post">
-    <input type="text" name="query" placeholder="Search for frames">
-    <input type="submit" value="Search">
+    <input type="text" name="query" placeholder="Search for frames" class="search-box">
+    <input type="submit" value="Search" class="search-btn">
 </form>
 
 <div id="results">
@@ -34,3 +74,4 @@
         });
     });
 </script>
+</div>

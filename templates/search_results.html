@@ -100,10 +100,22 @@
                 width: 100%;
             }
         }
+        .back-to-video {
+            display: block;
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
     </style>
 </head>
 <body>
     <h1>Video Search Results</h1>
+    <button class="back-to-video" onclick="window.location.href='/videos/{{ video.id }}'">Back to Video</button>
     <div class="results-container">
         {% for frame, similarity in results %}
         <div class="result-card">

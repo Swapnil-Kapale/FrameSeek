@@ -1,5 +1,5 @@
 from core import get_cassandra_connection
-from flask import Flask, request, render_template, send_from_directory,jsonify, url_for
+from flask import Flask, request, render_template, send_from_directory,jsonify, url_for,redirect
 from config import VIDEO_FOLDER, FRAME_FOLDER
 import os
 from datetime import datetime
@@ -54,7 +54,7 @@ def upload_video():
             session.execute("INSERT INTO videos (id, name, upload_time, hash) VALUES (%s, %s, %s, %s)", (id, video_file.filename, datetime.now(), video_hash))
             for item in res:
                 session.execute("INSERT INTO frame_embeddings (video_id, frame_timestamp, embedding) VALUES (%s, %s, %s)", (id, item['filename'], item['embedding'].tolist()))
-            return 'Video uploaded and indexed successfully!'
+            return redirect('/videos')
     return render_template('upload.html')
 
 
@@ -102,6 +102,10 @@ def serve_frame(filename):
 @app.route('/get-video/<path:filename>')
 def serve_video(filename):
     return send_from_directory(VIDEO_FOLDER, filename)
+
+@app.route('/')
+def home():
+    return redirect('/videos')
 
 if __name__ == '__main__':
     app.run(debug=True)

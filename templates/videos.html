@@ -1,12 +1,64 @@
-<h1>Videos</h1>
+<style>
+  .title {
+      text-align: center;
+  }
 
+  ul {
+      list-style-type: none;
+      padding: 0;
+  }
+
+  li {
+      margin-bottom: 20px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      width: 35%;
+  }
+
+  a {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+  }
+
+  .name {
+      margin: 2;
+      font-size: 1.5em;
+      padding: 10px 0;
+  }
+  .hash {
+      font-size: 1em;
+      color: #666;
+  }
+  .upload-btn {
+      display: block;
+      margin: 20px 0px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+  }
+
+
+</style>
+<div>
+<h1 class="title">Available Videos</h1>
+<button onclick="window.location.href='/upload'" class="upload-btn">Upload Video</button>
 <ul>
     {% for video in videos %}
         <li>
-            <h2>{{ video.name }}</h2>
+            <h2 class="name">{{ video.name }}</h2>
             <a href="/videos/{{ video.id }}">View</a>
-            <p>Hash: {{ video.hash }}</p>
+            <p class="hash">Hash: {{ video.hash }}</p>
             <p>Upload Time: {{ video.upload_time }}</p>
         </li>
     {% endfor %}
 </ul>
+
+</div>
