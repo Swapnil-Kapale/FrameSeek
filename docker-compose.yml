@@ -1,0 +1,34 @@
+services:
+  cassandra:
+    image: cassandra:latest
+    ports:
+      - "9042:9042"
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+    networks:
+      - cassandra-net
+    healthcheck:
+      test: ["CMD", "cqlsh", "-u", "cassandra", "-p", "cassandra", "127.0.0.1", "9042"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  init-cassandra:
+    image: cassandra:latest
+    # depends on cassandra service healthy
+    depends_on:
+      cassandra:
+        condition: service_healthy
+
+    volumes:
+      - ./init.cql:/init.cql
+    command: /bin/bash -c "sleep 10 && cqlsh -f /init.cql"
+    networks:
+      - cassandra-net
+
+volumes:
+  cassandra-data:
+
+networks:
+  cassandra-net:
+    driver: bridge
