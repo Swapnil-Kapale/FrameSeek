@@ -61,5 +61,5 @@ python app2.py
 
 ## Collaborators
 
-- [Collaborator Name](https://github.com/aabidk20)
-- [Another Collaborator](https://github.com/manojjamble)
+- [Aabid](https://github.com/aabidk20)
+- [Manoj](https://github.com/manojjamble)
